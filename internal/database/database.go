@@ -10,7 +10,7 @@ import (
 func Connect(databaseURL string) (*pgxpool.Pool, error) {
 	dbpool, err := pgxpool.New(context.Background(), databaseURL)
 	if err != nil {
-		return nil, fmt.Errorf("не удалось подключиться к базу данных: %w ", err)
+		return nil, fmt.Errorf("не удалось подключиться к базе данных: %w ", err)
 	}
 
 	if err = dbpool.Ping(context.Background()); err != nil {
