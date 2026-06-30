@@ -7,6 +7,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
+	_ "testTask/docs"
 )
 
 type Server struct {
@@ -19,6 +21,7 @@ func (s *Server) Start() error {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 	r.Post("/subscriptions", s.handler.Create)
 	r.Get("/subscriptions", s.handler.List)
 	r.Get("/subscriptions/total", s.handler.TotalCost)

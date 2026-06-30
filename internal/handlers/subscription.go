@@ -23,6 +23,16 @@ func New(repo *repository.SubscriptionRepository) *Handler {
 	return &Handler{repo: repo}
 }
 
+// @Summary      Создать подписку
+// @Description  Создаёт новую запись о подписке
+// @Tags         subscriptions
+// @Accept       json
+// @Produce      json
+// @Param        input  body      models.CreateSubscriptionInput  true  "Данные подписки"
+// @Success      201    {object}  map[string]int
+// @Failure      400    {string}  string  "invalid request body"
+// @Failure      500    {string}  string  "internal server error"
+// @Router       /subscriptions [post]
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var input models.CreateSubscriptionInput
 
@@ -43,6 +53,15 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]int{"id": id})
 }
 
+// @Summary      Получить подписку по ID
+// @Tags         subscriptions
+// @Produce      json
+// @Param        id   path      int  true  "ID подписки"
+// @Success      200  {object}  models.Subscription
+// @Failure      400  {string}  string  "invalid id"
+// @Failure      404  {string}  string  "subscription not found"
+// @Failure      500  {string}  string  "internal server error"
+// @Router       /subscriptions/{id} [get]
 func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
@@ -63,6 +82,16 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(sub)
 }
 
+// @Summary      Обновить подписку
+// @Tags         subscriptions
+// @Accept       json
+// @Param        id     path  int                             true  "ID подписки"
+// @Param        input  body  models.CreateSubscriptionInput  true  "Новые данные"
+// @Success      204
+// @Failure      400  {string}  string  "invalid request"
+// @Failure      404  {string}  string  "subscription not found"
+// @Failure      500  {string}  string  "internal server error"
+// @Router       /subscriptions/{id} [put]
 func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	var updateSubscription models.CreateSubscriptionInput
 
@@ -91,6 +120,13 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// @Summary      Удалить подписку
+// @Tags         subscriptions
+// @Param        id  path  int  true  "ID подписки"
+// @Success      204
+// @Failure      400  {string}  string  "invalid id"
+// @Failure      500  {string}  string  "internal server error"
+// @Router       /subscriptions/{id} [delete]
 func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
@@ -107,6 +143,12 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// @Summary      Список подписок
+// @Tags         subscriptions
+// @Produce      json
+// @Success      200  {array}   models.Subscription
+// @Failure      500  {string}  string  "internal server error"
+// @Router       /subscriptions [get]
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	list, err := h.repo.List(r.Context())
@@ -119,6 +161,17 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(list)
 }
 
+// @Summary      Суммарная стоимость подписок за период
+// @Tags         subscriptions
+// @Produce      json
+// @Param        user_id       query     string  true   "UUID пользователя"
+// @Param        from          query     string  true   "Начало периода (MM-YYYY)"
+// @Param        to            query     string  true   "Конец периода (MM-YYYY)"
+// @Param        service_name  query     string  false  "Название сервиса (опционально)"
+// @Success      200  {object}  map[string]int
+// @Failure      400  {string}  string  "invalid parameters"
+// @Failure      500  {string}  string  "internal server error"
+// @Router       /subscriptions/total [get]
 func (h *Handler) TotalCost(w http.ResponseWriter, r *http.Request) {
 	userIdStr := r.URL.Query().Get("user_id")
 

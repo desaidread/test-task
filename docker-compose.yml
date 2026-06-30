@@ -22,5 +22,19 @@ services:
       timeout: 5s
       retries: 5
 
+  
+  app:
+    build: .
+    container_name: subscriptions_app
+    ports:
+      - "8080:8080"
+    environment:
+      SQL_CONN: postgres://taskuser:taskpass@postgres:5432/taskdb?sslmode=disable
+      APP_PORT: 8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data: 
+

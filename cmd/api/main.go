@@ -1,3 +1,8 @@
+// @title           Subscriptions API
+// @version         1.0
+// @description     REST-сервис для агрегации данных об онлайн подписках пользователей
+// @host            localhost:8080
+// @BasePath        /
 package main
 
 import (
